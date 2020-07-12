@@ -8,7 +8,6 @@
 #define FCY 14740000
 
 #include "main.h"
-#include <xc.h>
 
 _FOSC(CSW_FSCM_OFF & FRC_PLL8); 
 _FWDT(WDT_OFF);
