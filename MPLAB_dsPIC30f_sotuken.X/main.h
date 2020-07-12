@@ -18,18 +18,8 @@ extern "C" {
 #include "p30f4012.h"
 #include <libpic30.h>
 #include <stdlib.h>
-//#include "I2C.h"
 
-void I2C_init(void);
-bool I2C_ReceiveCheck(void);
-void Slave_Interrupt(void);
-void __attribute__((interrupt,no_auto_psv)) _SI2CInterrupt(void);
-    
-uint8_t ReceiveBuffer[256] = {};
-uint8_t SendBuffer[256] = {};
-uint8_t *ReceiveTemp;
-uint8_t *SendTemp;
-bool receiveflag = false;
+//void __attribute__((interrupt,no_auto_psv)) _SI2CInterrupt(void);
 
 #ifdef	__cplusplus
 }
