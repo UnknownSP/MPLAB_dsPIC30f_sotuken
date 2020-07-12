@@ -33,10 +33,10 @@ int main(void){
     TRISC=0;
     LATCbits.LATC14=1;
     while(1){
-        LATCbits.LATC13=1;
+        /*LATCbits.LATC13=1;
         __delay_ms(1000);
         LATCbits.LATC13=0;
-        __delay_ms(1000);
+        __delay_ms(1000);*/
         if(I2C_ReceiveCheck()){
             if((ReadBuffer[0] == 0x11) && (ReadBuffer[1] == 0x22)){
                 LATCbits.LATC14=0;
