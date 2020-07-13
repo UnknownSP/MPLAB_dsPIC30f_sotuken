@@ -5,7 +5,7 @@
  * Created on July 12, 2020, 4:40 PM
  */
 
-#define FCY 14740000
+#define FCY 14744000
 
 #include "main.h"
 #include "i2c.h"
@@ -17,10 +17,17 @@ _FGS(CODE_PROT_OFF);
 
 int main(void){
     
+    int i;
+    
     I2C_init();
     
     TRISC=0;
-    LATCbits.LATC14=1;
+    //LATCbits.LATC14=1;
+    
+    for(i=0;i<SEND_DATA_BYTE;i++){
+        SendBuffer[i] = i+1; 
+    }
+    
     while(1){
         /*LATCbits.LATC13=1;
         __delay_ms(1000);
@@ -30,7 +37,24 @@ int main(void){
             if((ReceiveBuffer[0] == 0x11) && (ReceiveBuffer[1] == 0x32)){
                 LATCbits.LATC14 ^= 1;
             }
+            for(i=0;i<SEND_DATA_BYTE;i++){
+                SendBuffer[i]++;
+                if(SendBuffer[i] >= 0xff){
+                    SendBuffer[i] = 0;
+                }
+            }
         }
+        if((I2CSTATbits.S == 0)){
+            LATCbits.LATC13=0;
+        }else{
+            LATCbits.LATC13=1;
+        }
+        if((I2CSTATbits.P == 0)){
+            //LATCbits.LATC14=0;
+        }else{
+            //LATCbits.LATC14=1;
+        }
+        
     }
     
     return 0;

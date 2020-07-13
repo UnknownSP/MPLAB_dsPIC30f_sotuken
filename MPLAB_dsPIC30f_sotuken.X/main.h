@@ -25,5 +25,8 @@ extern "C" {
 }
 #endif
 
+#define SEND_DATA_BYTE 5
+#define RECEIVE_DATA_BYTE 2
+
 #endif	/* MAIN_H */
 

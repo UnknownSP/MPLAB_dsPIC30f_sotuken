@@ -13,12 +13,16 @@
 #include <libpic30.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "main.h"
 
 void I2C_init(void);
 bool I2C_ReceiveCheck(void);
 
-extern uint8_t ReceiveBuffer[8];
-extern uint8_t SendBuffer[8];
+extern uint8_t ReceiveBuffer[RECEIVE_DATA_BYTE];
+extern uint8_t SendBuffer[SEND_DATA_BYTE+1];
+extern uint8_t *ReceiveTemp;
+extern uint8_t *SendTemp;
+
 
 #endif	/* I2C_H */
 
