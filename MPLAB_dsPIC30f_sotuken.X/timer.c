@@ -18,8 +18,8 @@ void TIMER1_STOP(void){
     TIMER1_init();
 }
 
-uint16_t get_interval_time(void){
-    uint16_t return_count;
+uint32_t get_interval_time(void){
+    uint32_t return_count;
     return_count = timer_clock_count;
     timer_clock_count = 0;
     return return_count;

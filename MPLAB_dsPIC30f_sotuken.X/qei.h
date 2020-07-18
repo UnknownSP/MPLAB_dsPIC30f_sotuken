@@ -16,10 +16,10 @@
 #include "main.h"
 
 void QEI_init(void);
-void get_encoder_data(int16_t *sum, int16_t *increment);
+void get_encoder_data(int32_t *sum, int16_t *increment);
 
-static int16_t encoder_count_num = 0;
-static int increment_num = 0;
+static int32_t encoder_count_num = 0;
+static int16_t increment_num = 0;
 
 #endif	/* QEI_H */
 

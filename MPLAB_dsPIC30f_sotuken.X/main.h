@@ -18,5 +18,7 @@
 #define SEND_DATA_BYTE 6
 #define RECEIVE_DATA_BYTE 2
 
+void init(void);
+
 #endif	/* MAIN_H */
 

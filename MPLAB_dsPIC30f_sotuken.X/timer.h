@@ -18,9 +18,9 @@
 void TIMER1_init(void);
 void TIMER1_START(void);
 void TIMER1_STOP(void);
-uint16_t get_interval_time(void);
+uint32_t get_interval_time(void);
 
-static unsigned int timer_clock_count = 0;
+static uint32_t timer_clock_count = 0;
 
 #endif	/* TIMER_H */
 

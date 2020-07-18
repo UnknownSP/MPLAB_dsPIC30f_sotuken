@@ -17,23 +17,13 @@ _FWDT(WDT_OFF);
 _FBORPOR(PBOR_ON & BORV20 & PWRT_64 & MCLR_EN); 
 _FGS(CODE_PROT_OFF);
 
-unsigned int time_count = 0;
-
 int main(void){
     
-    int i=0;
+    int32_t encoder_count;
+    int16_t encoder_increment;
+    uint32_t time_count = 0;
     
-    I2C_init();
-    QEI_init();
-    TIMER1_init();
-    
-    TRISC=0;
-    
-    for(i=0;i<SEND_DATA_BYTE;i++){
-        SendBuffer[i] = i+1; 
-    }
-    
-    int encoder_count,encoder_increment;
+    init();
     
     TIMER1_START();
     while(1){
@@ -53,26 +43,16 @@ int main(void){
         }*/
         if(I2C_ReceiveCheck()){
             if((ReceiveBuffer[0] == 0x11) && (ReceiveBuffer[1] == 0x32)){
-                LATCbits.LATC14 = 0;
-                LATCbits.LATC13 = 1;
+                LATCbits.LATC14 = 0; //red
+                LATCbits.LATC13 = 1; //green
             }else{
                 LATCbits.LATC14 = 1;
                 LATCbits.LATC13 = 0;
             }
-            /*for(i=0;i<SEND_DATA_BYTE;i++){
-                if((i==4)||(i==5)){
-                    if(i==4){
-                        SendBuffer[i]++;
-                    }
-                    if(i==5){
-                        SendBuffer[i]--;
-                    }
-                }
-            }*/
+            get_encoder_data(&encoder_count,&encoder_increment);
             time_count = get_interval_time();
             SendBuffer[2] = (uint8_t)(time_count);
             SendBuffer[3] = (uint8_t)((time_count)>>8);
-            get_encoder_data(&encoder_count,&encoder_increment);
             SendBuffer[0] = (int8_t)encoder_count;
             SendBuffer[1] = (int8_t)(encoder_count >> 8);
             SendBuffer[4] = (int8_t)encoder_increment;
@@ -81,4 +61,19 @@ int main(void){
     }
     
     return 0;
+}
+
+
+void init(void){
+    int i;
+    
+    I2C_init();
+    QEI_init();
+    TIMER1_init();
+    
+    TRISC=0;
+    
+    for(i=0;i<SEND_DATA_BYTE;i++){
+        SendBuffer[i] = i+1; 
+    }
 }
