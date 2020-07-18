@@ -17,7 +17,7 @@ void QEI_init(void){
 void get_encoder_data(int16_t *sum, int16_t *increment){
     increment_num = POSCNT - 32767;
     POSCNT = 32767;
-    encoder_count += increment_num;
-    *sum = encoder_count;
+    encoder_count_num += increment_num;
+    *sum = encoder_count_num;
     *increment = increment_num;
 }
