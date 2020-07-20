@@ -11,6 +11,7 @@
 #include "i2c.h"
 #include "qei.h"
 #include "timer.h"
+#include "pwm.h"
 
 _FOSC(CSW_FSCM_OFF & FRC_PLL16); 
 _FWDT(WDT_OFF);
@@ -24,6 +25,9 @@ int main(void){
     uint32_t time_count = 0;
     
     init();
+    
+    uint16_t duty = 0;
+    uint8_t mode = 0;
     
     TIMER1_START();
     while(1){
@@ -43,12 +47,16 @@ int main(void){
         }*/
         if(I2C_ReceiveCheck()){
             if((ReceiveBuffer[0] == 0x11) && (ReceiveBuffer[1] == 0x32)){
-                LATCbits.LATC14 = 0; //red
-                LATCbits.LATC13 = 1; //green
+                LATCbits.LATC14 = 0; //green
+                LATCbits.LATC13 = 1; //blue
             }else{
                 LATCbits.LATC14 = 1;
                 LATCbits.LATC13 = 0;
             }
+            duty = (ReceiveBuffer[0] & 0x03) << 8;
+            duty |= ReceiveBuffer[1];
+            mode = (ReceiveBuffer[0] >> 2) & 0x03;
+            set_pwm(duty, mode);
             get_encoder_data(&encoder_count,&encoder_increment);
             time_count = get_interval_time();
             SendBuffer[2] = (uint8_t)(time_count);
@@ -70,6 +78,7 @@ void init(void){
     I2C_init();
     QEI_init();
     TIMER1_init();
+    PWM_init();
     
     TRISC=0;
     

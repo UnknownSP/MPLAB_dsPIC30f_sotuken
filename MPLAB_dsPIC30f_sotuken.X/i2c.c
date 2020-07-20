@@ -42,25 +42,24 @@ void __attribute__((interrupt,no_auto_psv)) _SI2CInterrupt(void){
             I2CCONbits.SCLREL = 1;
         }else if((I2CSTATbits.R_W == 1)&&(I2CSTATbits.D_A == 0)){
             if(I2CSTATbits.TBF == 1){
-                Temp = I2CTRN;
-                while((I2CSTATbits.TBF));
                 I2CTRN = SendBuffer[send_count];
+                I2CCONbits.SCLREL = 1;
+                while((I2CSTATbits.TBF));
                 send_count++;
                 if(send_count == SEND_DATA_BYTE + 1){
                     send_count = 0;
                     I2C_init();
                 }
-                I2CCONbits.SCLREL = 1;
             }else{
                 if(I2CSTATbits.ACKSTAT == 0){
-                    while((I2CSTATbits.TBF));
                     I2CTRN = SendBuffer[send_count];
+                    I2CCONbits.SCLREL = 1;
+                    while((I2CSTATbits.TBF));
                     send_count++;
                     if(send_count == SEND_DATA_BYTE + 1){
                         send_count = 0;
                         I2C_init();
                     }
-                    I2CCONbits.SCLREL = 1;
                 }
             }
         }
