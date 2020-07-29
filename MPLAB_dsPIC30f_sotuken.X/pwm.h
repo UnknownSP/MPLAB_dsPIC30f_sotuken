@@ -15,7 +15,10 @@
 #include <stdlib.h>
 #include "main.h"
 
-#define MAX_DUTY 1000
+#define LED1 LATCbits.LATC13 //green
+#define LED2 LATCbits.LATC14 //blue
+
+#define MAX_DUTY 990
 
 typedef enum{
     FREE_MODE = 0,

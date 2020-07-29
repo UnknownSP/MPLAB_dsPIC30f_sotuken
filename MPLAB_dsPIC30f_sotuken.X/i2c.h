@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include "main.h"
 
-void I2C_init(void);
+void I2C_init(uint8_t address);
 bool I2C_ReceiveCheck(void);
 
 extern uint8_t ReceiveBuffer[RECEIVE_DATA_BYTE];

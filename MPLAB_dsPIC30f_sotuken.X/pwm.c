@@ -1,12 +1,15 @@
 #include "pwm.h"
 
 void PWM_init(void){
+    TRISC = 0;
+    LED1 = 0;
+    LED2 = 0;
     TRISE = 0x0000;
-    LATE = 0xffff;
-    PTPER = 499;
+    LATE = 0x0000;
+    PTPER = 999; //29.48kHz
     SEVTCMP = 0;
     DTCON1bits.DTAPS = 0;
-    DTCON1bits.DTA = 6;
+    DTCON1bits.DTA = 50;
     PWMCON1bits.PTMOD1 = 0;
     PWMCON1bits.PTMOD2 = 0;
     PWMCON1bits.PTMOD3 = 1;
@@ -39,10 +42,14 @@ void set_pwm(uint16_t duty, Drive_Mode_t mode){
         PDC1 = 0;
         PDC2 = 0;
         pwm_output_reset();
+        LED1 = 0;
+        LED2 = 0;
         break;
         
     case FORWARD_MODE:
         pwm_output_reset();
+        LED1 = 1;
+        LED2 = 0;
         PDC1 = (unsigned int)((double)PTPER * (((double)duty*2.0)/1024.0));
         PDC2 = (unsigned int)((double)PTPER * (((double)duty*2.0)/1024.0));
         OVDCONbits.POVD1H = 1;
@@ -57,6 +64,8 @@ void set_pwm(uint16_t duty, Drive_Mode_t mode){
         
     case BACKWARD_MODE:
         pwm_output_reset();
+        LED1 = 0;
+        LED2 = 1;
         PDC1 = (unsigned int)((double)PTPER * (((double)duty*2.0)/1024.0));
         PDC2 = (unsigned int)((double)PTPER * (((double)duty*2.0)/1024.0));
         OVDCONbits.POVD1H = 0;
@@ -71,6 +80,8 @@ void set_pwm(uint16_t duty, Drive_Mode_t mode){
          
     case BRAKE_MODE:
         pwm_output_reset();
+        LED1 = 1;
+        LED2 = 1;
         PDC1 = 0;
         PDC2 = 0;
         OVDCONbits.POVD1H = 0;

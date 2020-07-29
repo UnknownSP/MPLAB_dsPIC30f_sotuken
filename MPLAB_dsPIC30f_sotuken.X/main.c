@@ -23,38 +23,17 @@ int main(void){
     int32_t encoder_count;
     int16_t encoder_increment;
     uint32_t time_count = 0;
+    uint16_t duty = 0;
+    uint8_t mode = 0;
+    int count;
     
     init();
     
-    uint16_t duty = 0;
-    uint8_t mode = 0;
-    
     TIMER1_START();
     while(1){
-        /*LATCbits.LATC13=1;
-        __delay_ms(1000);
-        LATCbits.LATC13=0;
-        __delay_ms(1000);*/
-        /*if((I2CSTATbits.S == 0)){
-            LATCbits.LATC13=1;
-        }else{
-            LATCbits.LATC13=0;
-        }
-        if((I2CSTATbits.P == 0)){
-            LATCbits.LATC14=1;
-        }else{
-            LATCbits.LATC14=0;
-        }*/
         if(I2C_ReceiveCheck()){
-            if((ReceiveBuffer[0] == 0x11) && (ReceiveBuffer[1] == 0x32)){
-                LATCbits.LATC14 = 0; //green
-                LATCbits.LATC13 = 1; //blue
-            }else{
-                LATCbits.LATC14 = 1;
-                LATCbits.LATC13 = 0;
-            }
-            duty = (ReceiveBuffer[0] & 0x03) << 8;
-            duty |= ReceiveBuffer[1];
+            duty = ((uint8_t)(ReceiveBuffer[0]) & 0x03) << 8;
+            duty |= (uint8_t)(ReceiveBuffer[1]);
             mode = (ReceiveBuffer[0] >> 2) & 0x03;
             set_pwm(duty, mode);
             get_encoder_data(&encoder_count,&encoder_increment);
@@ -74,13 +53,24 @@ int main(void){
 
 void init(void){
     int i;
+    uint8_t address;
     
-    I2C_init();
+    ADPCFG = 0xffff;
+    TRISBbits.TRISB0 = 1;
+    TRISBbits.TRISB1 = 1;
+    TRISBbits.TRISB2 = 1;
+    TRISBbits.TRISB3 = 1;
+    
+    address = 0x10;
+    address |= (ADD_INPUT_1 << 0);
+    address |= (ADD_INPUT_2 << 1);
+    address |= (ADD_INPUT_3 << 2);
+    address |= (ADD_INPUT_4 << 3);
+    
+    I2C_init(address);
     QEI_init();
     TIMER1_init();
     PWM_init();
-    
-    TRISC=0;
     
     for(i=0;i<SEND_DATA_BYTE;i++){
         SendBuffer[i] = i+1; 

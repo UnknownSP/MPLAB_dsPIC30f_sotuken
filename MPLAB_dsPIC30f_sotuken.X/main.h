@@ -18,6 +18,11 @@
 #define SEND_DATA_BYTE 6
 #define RECEIVE_DATA_BYTE 2
 
+#define ADD_INPUT_1 PORTBbits.RB0
+#define ADD_INPUT_2 PORTBbits.RB1
+#define ADD_INPUT_3 PORTBbits.RB2
+#define ADD_INPUT_4 PORTBbits.RB3
+
 void init(void);
 
 #endif	/* MAIN_H */

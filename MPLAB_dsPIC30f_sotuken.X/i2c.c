@@ -5,11 +5,13 @@ uint8_t SendBuffer[SEND_DATA_BYTE+1] = {};
 uint8_t *ReceiveTemp;
 bool receiveflag = false;
 int send_count = 0;
+static uint8_t add = 0;
 
-void I2C_init(void){
+void I2C_init(uint8_t address){
     I2CCON = 0x0000;
     I2CCON = 0x9040;
-    I2CADD = 0x50;
+    I2CADD = address;
+    add = address;
     
     IFS0 = 0;
     ReceiveTemp = &ReceiveBuffer[0];
@@ -48,7 +50,7 @@ void __attribute__((interrupt,no_auto_psv)) _SI2CInterrupt(void){
                 send_count++;
                 if(send_count == SEND_DATA_BYTE + 1){
                     send_count = 0;
-                    I2C_init();
+                    I2C_init(add);
                 }
             }else{
                 if(I2CSTATbits.ACKSTAT == 0){
@@ -58,7 +60,7 @@ void __attribute__((interrupt,no_auto_psv)) _SI2CInterrupt(void){
                     send_count++;
                     if(send_count == SEND_DATA_BYTE + 1){
                         send_count = 0;
-                        I2C_init();
+                        I2C_init(add);
                     }
                 }
             }
