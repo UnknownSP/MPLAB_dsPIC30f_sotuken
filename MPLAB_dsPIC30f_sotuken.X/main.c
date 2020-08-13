@@ -12,6 +12,7 @@
 #include "qei.h"
 #include "timer.h"
 #include "pwm.h"
+#include "pid.h"
 
 _FOSC(CSW_FSCM_OFF & FRC_PLL16); 
 _FWDT(WDT_OFF);
@@ -23,8 +24,8 @@ int main(void){
     int32_t encoder_count;
     int16_t encoder_increment;
     uint32_t time_count = 0;
-    uint16_t duty = 0;
-    uint8_t mode = 0;
+    uint16_t duty = 0,target_duty = 0;
+    Drive_Mode_t mode = 0,target_mode = 0;;
     int count;
     
     init();
@@ -32,12 +33,13 @@ int main(void){
     TIMER1_START();
     while(1){
         if(I2C_ReceiveCheck()){
-            duty = ((uint8_t)(ReceiveBuffer[0]) & 0x03) << 8;
-            duty |= (uint8_t)(ReceiveBuffer[1]);
-            mode = (ReceiveBuffer[0] >> 2) & 0x03;
-            set_pwm(duty, mode);
+            target_duty = ((uint8_t)(ReceiveBuffer[0]) & 0x03) << 8;
+            target_duty |= (uint8_t)(ReceiveBuffer[1]);
+            target_mode = (ReceiveBuffer[0] >> 2) & 0x03;
             get_encoder_data(&encoder_count,&encoder_increment);
             time_count = get_interval_time();
+            get_pid_duty(&duty,&mode,target_duty,target_mode,time_count,encoder_increment);
+            set_pwm(duty, mode);
             SendBuffer[2] = (uint8_t)(time_count);
             SendBuffer[3] = (uint8_t)((time_count)>>8);
             SendBuffer[0] = (int8_t)encoder_count;
