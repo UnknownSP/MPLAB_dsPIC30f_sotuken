@@ -38,17 +38,16 @@ int main(void){
     TIMER1_START();
     while(1){
         if(I2C_ReceiveCheck()){
-            //target_duty = ((uint8_t)(ReceiveBuffer[0]) & 0x03) << 8;
-            //target_duty |= (uint8_t)(ReceiveBuffer[1]);
-            
+            target_duty = ((uint8_t)(ReceiveBuffer[0]) & 0x03) << 8;
+            target_duty |= (uint8_t)(ReceiveBuffer[1]);
             if(target_duty > 990){
                 target_duty = 990;
             }
-            //target_mode = (ReceiveBuffer[0] >> 2) & 0x03;
+            target_mode = (ReceiveBuffer[0] >> 2) & 0x03;
             get_encoder_data(&encoder_count,&encoder_increment);
             time_count = get_interval_time();
             
-            if((uint8_t)(ReceiveBuffer[1]) != 0){
+            /*if((uint8_t)(ReceiveBuffer[1]) != 0){
                 system_time += time_count;
                 start_flag = true;
             }else if((uint8_t)(ReceiveBuffer[1]) == 0){
@@ -67,20 +66,20 @@ int main(void){
                     target_mode = 1;
                 }  
                 system_time = 0;
-            }
+            }*/
             
             get_pid_duty(&operate_target,&operate_nowval,&duty,&mode,target_duty,target_mode,time_count,encoder_increment);
             set_pwm(duty, mode);
-            SendBuffer[2] = (uint8_t)(mode);
-            SendBuffer[3] = (uint8_t)(time_count);
+            //SendBuffer[2] = (uint8_t)(mode);
+            //SendBuffer[3] = (uint8_t)(time_count);
             //SendBuffer[0] = (int8_t)duty;
             //SendBuffer[1] = (int8_t)(duty >> 8);
             //SendBuffer[4] = (int8_t)encoder_increment;
             //SendBuffer[5] = (int8_t)(encoder_increment >> 8);
-            SendBuffer[0] = (int8_t)operate_target;
-            SendBuffer[1] = (int8_t)(operate_target >> 8);
-            SendBuffer[4] = (int8_t)operate_nowval;
-            SendBuffer[5] = (int8_t)(operate_nowval >> 8);
+            //SendBuffer[0] = (int8_t)operate_target;
+            //SendBuffer[1] = (int8_t)(operate_target >> 8);
+            //SendBuffer[4] = (int8_t)operate_nowval;
+            //SendBuffer[5] = (int8_t)(operate_nowval >> 8);
         }
     }
     
