@@ -19,3 +19,6 @@
 ![オムニホイールとの接続](https://github.com/UnknownSP/MPLAB_dsPIC30f_sotuken/assets/39638661/dc672f14-e9b5-45f3-9b9d-1955b82e899e)
 
 ## 仕様
+
+QEI機能を用いて取得したエンコーダの値を基に、PID制御を用いて指定の速度になるように制御しています。
+速度や回転方向の指定はI2C通信を用いて行います。
